@@ -1,0 +1,1018 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  english,
+  russian,
+  12pt,
+  a4paper,
+  DIV=11,
+  numbers=noendperiod]{scrreprt}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{setspace}
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+
+\ifLuaTeX
+\usepackage[bidi=basic,provide=*]{babel}
+\else
+\usepackage[bidi=default,provide=*]{babel}
+\fi
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+\usepackage[style=gost-numeric,backend=biber,langhook=extras,autolang=other*]{biblatex}
+\addbibresource{bib/cite.bib}
+
+\usepackage[]{csquotes}
+
+\usepackage{indentfirst}
+\usepackage{float}
+\floatplacement{figure}{H}
+\IfFileExists{plex-otf.sty}{
+  %% Full TeXlive
+  \usepackage[
+    % math,
+    RM={Scale=0.94},SS={Scale=0.94},SScon={Scale=0.94},TT={Scale=MatchLowercase,FakeStretch=0.9},
+    DefaultFeatures={Ligatures=Common}
+  ]{plex-otf}
+  % \usepackage[Scale=MatchUppercase]{juliamono}
+  \setmonofont{JuliaMono}[Scale=0.9, Ligatures=Common] 
+}{
+  %% TinyTeX
+  \usepackage{libertine}
+  \usepackage{fontspec} 
+  \setmonofont{JuliaMono}[Scale=0.9, Ligatures=Common]
+}
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Содержание}
+\else
+  \newcommand\contentsname{Содержание}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{Список иллюстраций}
+\else
+  \newcommand\listfigurename{Список иллюстраций}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{Список таблиц}
+\else
+  \newcommand\listtablename{Список таблиц}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Рисунок}
+\else
+  \newcommand\figurename{Рисунок}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Таблица}
+\else
+  \newcommand\tablename{Таблица}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Список}
+\newcommand*\listoflistings{\listof{codelisting}{Листинги}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Лабораторная работа №1},
+  pdfauthor={Люпп Софья Романовна},
+  pdflang={ru-RU},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Лабораторная работа №1}
+\author{Люпп Софья Романовна}
+\date{}
+\begin{document}
+\maketitle
+
+\renewcommand*\contentsname{Содержание}
+{
+\setcounter{tocdepth}{1}
+\tableofcontents
+}
+\listoffigures
+\listoftables
+
+\setstretch{1.5}
+\chapter{Цель
+работы}\label{ux446ux435ux43bux44c-ux440ux430ux431ux43eux442ux44b}
+
+Цель данной лабораторной работы - приобретение практических навыков
+работы с системой управления версиями Git, языком программирования
+Julia.
+
+\chapter{Задание}\label{ux437ux430ux434ux430ux43dux438ux435}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Выполнить задания из лабораторной работы
+\item
+  Оформить отчет по лабораторной работе с помощью Markdown
+\item
+\begin{verbatim}
+ Выполнить домашнюю работу
+\end{verbatim}
+\end{enumerate}
+
+\chapter{Теоретическое
+введение}\label{ux442ux435ux43eux440ux435ux442ux438ux447ux435ux441ux43aux43eux435-ux432ux432ux435ux434ux435ux43dux438ux435}
+
+Системы контроля версий (Version Control System, VCS) применяются при
+работе нескольких человек над одним проектом. Обычно основное дерево
+проекта хранится в локальном или удалённом репозитории, к которому
+настроен доступ для участников проекта. При внесении изменений в
+содержание проекта система контроля версий позволяет их фиксировать,
+совмещать изменения, произведённые разными участниками проекта,
+производить откат к любой более ранней версии проекта, если это
+требуется.
+
+Системы контроля версий также могут обеспечивать дополнительные, более
+гибкие функциональные возможности. Например, они могут поддерживать
+работу с несколькими версиями одного файла, сохраняя общую историю
+изменений до точки ветвления версий и собственные истории изменений
+каждой ветви. Кроме того, обычно доступна информация о том, кто из
+участников, когда и какие изменения вносил. Обычно такого рода
+информация хранится в журнале изменений, доступ к которому можно
+ограничить.
+
+1.2.1.4 Создание ключа ssh 1. Общая информация 1. Алгоритмы шифрования
+ssh 1. Аутентификация В SSH поддерживается четыре алгоритма
+аутентификации по открытым ключам: --- DSA: --- размер ключей DSA не
+может превышать 1024, его следует отключить; --- RSA: --- следует
+создавать ключ большого размера: 4096 бит; --- ECDSA: --- ECDSA завязан
+на технологиях NIST, его следует отключить; --- Ed25519: ---
+используется пока не везде.
+
+По умолчанию пользовательские ssh-ключи сохраняются в каталоге
+\textasciitilde/.ssh в домашнем каталоге пользователя.
+
+Создание ключа ssh --- Ключ ssh создаётся командой: ssh-keygen -t
+
+1.2.2.5.1 Основные ветки (master) и ветки разработки (develop) Для
+фиксации истории проекта в рамках этого процесса вместо одной ветки
+master используются две ветки. В ветке master хранится официальная
+история релиза, а ветка develop предназначена для объединения всех
+функций. Кроме того, для удобства рекомендуется присваивать всем
+коммитам в ветке master номер версии.
+
+1.2.2.5.2 Функциональные ветки (feature)
+
+Под каждую новую функцию должна быть отведена собственная ветка, которую
+можно отправлять в центральный репозиторий для создания резервной копии
+или совместной работы команды. Ветки feature создаются не на основе
+master, а на основе develop. Когда работа над функцией завершается,
+соответствующая ветка сливается обратно с веткой develop. Функции не
+следует отправлять напрямую в ветку master. Как правило, ветки feature
+создаются на основе последней ветки develop.
+
+2.1 Литературное (грамотное) программирование --- это подход,
+приоритизирующий понятность программы для человека, а не её исполнение
+компьютером. В экосистеме Julia он реализуется через несколько
+инструментов. Предлагается использовать Literate.jl.
+
+Идея, предложенная Дональдом Кнутом {[}1---3{]}, меняет традиционный
+взгляд: программа создаётся не как последовательность инструкций для
+машины, а как литературное эссе, объясняющее логику решения задачи.
+
+--- Literate.jl отлично подходит для автоматизации создания
+документации, а также для написания статей и учебников прямо в
+.jl-файлах. --- Weave.jl больше заточен под академические отчёты и
+публикации, требующие строгого форматирования (LaTeX/PDF). --- Jupyter
+лучше подходит для интерактивного исследования данных, но управление
+версиями .ipynb-файлов и их автоматизация сложнее.
+
+\chapter{Выполнение лабораторной
+работы}\label{ux432ux44bux43fux43eux43bux43dux435ux43dux438ux435-ux43bux430ux431ux43eux440ux430ux442ux43eux440ux43dux43eux439-ux440ux430ux431ux43eux442ux44b}
+
+Начинаю с подготовки и настройки рабочего пространства (установка git)
+(рис.~\ref{fig-001}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/1.png}
+
+}
+
+\caption{\label{fig-001}git1}
+
+\end{figure}%
+
+Настраиваю git configs(рис.~\ref{fig-002}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/2.png}
+
+}
+
+\caption{\label{fig-002}gitconfigs}
+
+\end{figure}%
+
+Пробую делать коммиты(рис.~\ref{fig-003}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/3.png}
+
+}
+
+\caption{\label{fig-003}commits}
+
+\end{figure}%
+
+Настраиваю gitignores(рис.~\ref{fig-004}) (рис.~\ref{fig-005}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/4.png}
+
+}
+
+\caption{\label{fig-004}gitignores}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/5.png}
+
+}
+
+\caption{\label{fig-005}gitignores2}
+
+\end{figure}%
+
+Далее работаю с настройкой ключей ssh-keygen (рис.~\ref{fig-006}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/6.png}
+
+}
+
+\caption{\label{fig-006}ssh}
+
+\end{figure}%
+
+Получаю ключ rsa (рис.~\ref{fig-007}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/7.png}
+
+}
+
+\caption{\label{fig-007}rsa}
+
+\end{figure}%
+
+Работаю с ветками git master, git origin (рис.~\ref{fig-008}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/8.png}
+
+}
+
+\caption{\label{fig-008}git}
+
+\end{figure}%
+
+Генерирую ключ gpg (рис.~\ref{fig-009}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/9.png}
+
+}
+
+\caption{\label{fig-009}gpg}
+
+\end{figure}%
+
+Устанавливаю необходимые параметры для ключа: 4096, rsa, key does not
+expire at all (0) (рис.~\ref{fig-010}) (рис.~\ref{fig-011})..
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/10.png}
+
+}
+
+\caption{\label{fig-010}gpg1}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/11.png}
+
+}
+
+\caption{\label{fig-011}gpg2}
+
+\end{figure}%
+
+Затем копирую ключ и прикрепляю новый gpg ключ на свой профиль в GitHub
+(рис.~\ref{fig-012}) (рис.~\ref{fig-013})..
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/12.png}
+
+}
+
+\caption{\label{fig-012}gpg3}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/13.png}
+
+}
+
+\caption{\label{fig-013}gpg4}
+
+\end{figure}%
+
+Настраиваю configs (рис.~\ref{fig-014}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/14.png}
+
+}
+
+\caption{\label{fig-014}configs2}
+
+\end{figure}%
+
+Теперь необходимо установить и распаковать gitflow (рис.~\ref{fig-015})
+(рис.~\ref{fig-016}) (рис.~\ref{fig-017}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/15.png}
+
+}
+
+\caption{\label{fig-015}gitflow1}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/16.png}
+
+}
+
+\caption{\label{fig-016}gitflow2}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/17.png}
+
+}
+
+\caption{\label{fig-017}gitflow3}
+
+\end{figure}%
+
+Настройка branches (рис.~\ref{fig-018}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/18.png}
+
+}
+
+\caption{\label{fig-018}branches}
+
+\end{figure}%
+
+Checking the branches (рис.~\ref{fig-019}) (рис.~\ref{fig-020}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/19.png}
+
+}
+
+\caption{\label{fig-019}branches2}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/20.png}
+
+}
+
+\caption{\label{fig-020}branches3}
+
+\end{figure}%
+
+Так же необходимо предустановить gh (рис.~\ref{fig-021}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/21.png}
+
+}
+
+\caption{\label{fig-021}gh}
+
+\end{figure}%
+
+Установленный gitflow (рис.~\ref{fig-022}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/22.png}
+
+}
+
+\caption{\label{fig-022}gitflow}
+
+\end{figure}%
+
+По заданию нужно установить nodejs (рис.~\ref{fig-023})
+(рис.~\ref{fig-024}) (рис.~\ref{fig-025}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/23.png}
+
+}
+
+\caption{\label{fig-023}nodejs}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/24.png}
+
+}
+
+\caption{\label{fig-024}nodejs2}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/25.png}
+
+}
+
+\caption{\label{fig-025}nodejs3}
+
+\end{figure}%
+
+Устанавливаю libxcrip (рис.~\ref{fig-026}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/26.png}
+
+}
+
+\caption{\label{fig-026}libxcript}
+
+\end{figure}%
+
+Установка quarto (рис.~\ref{fig-027}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/27.png}
+
+}
+
+\caption{\label{fig-027}quarto}
+
+\end{figure}%
+
+Добавила в преамбуле preamble.tex пакет juliamono (рис.~\ref{fig-028})
+(рис.~\ref{fig-029}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/28.png}
+
+}
+
+\caption{\label{fig-028}juliamono}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/29.png}
+
+}
+
+\caption{\label{fig-029}juliamono2}
+
+\end{figure}%
+
+В каталоге отчёта в файл \_quarto.yml включила поддержку кода julia.
+Добавила после описания проекта (рис.~\ref{fig-030})
+(рис.~\ref{fig-031}) (рис.~\ref{fig-032}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/30.png}
+
+}
+
+\caption{\label{fig-030}quarto2}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/31.png}
+
+}
+
+\caption{\label{fig-031}quarto3}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/32.png}
+
+}
+
+\caption{\label{fig-032}quarto4}
+
+\end{figure}%
+
+Устанавливаю jupiter (рис.~\ref{fig-033}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/33.png}
+
+}
+
+\caption{\label{fig-033}jupiter}
+
+\end{figure}%
+
+Через терминал вывожу jupiter в mozila firefox (рис.~\ref{fig-034}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/34.png}
+
+}
+
+\caption{\label{fig-034}jupiter2}
+
+\end{figure}%
+
+Генерация файла с экспоненциальным ростом через julia
+(рис.~\ref{fig-035}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/35.png}
+
+}
+
+\caption{\label{fig-035}exponential}
+
+\end{figure}%
+
+Презентация экспоненциального роста в папке plots (рис.~\ref{fig-036}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/36.png}
+
+}
+
+\caption{\label{fig-036}juliaplots}
+
+\end{figure}%
+
+Вывод файла exponential (рис.~\ref{fig-037}) (рис.~\ref{fig-038})
+(рис.~\ref{fig-039}) (рис.~\ref{fig-040}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/37.png}
+
+}
+
+\caption{\label{fig-037}result}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/38.png}
+
+}
+
+\caption{\label{fig-038}results}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/39.png}
+
+}
+
+\caption{\label{fig-039}results1}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/40.png}
+
+}
+
+\caption{\label{fig-040}result2}
+
+\end{figure}%
+
+Создаю новый файл для описания экспоненциального роста
+(рис.~\ref{fig-041}) (рис.~\ref{fig-042}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/41.png}
+
+}
+
+\caption{\label{fig-041}exp}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/42.png}
+
+}
+
+\caption{\label{fig-042}exp2}
+
+\end{figure}%
+
+Устанавливаю пакеты DrWatson и другие (рис.~\ref{fig-043})
+(рис.~\ref{fig-044}) (рис.~\ref{fig-045})(рис.~\ref{fig-046}) .
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/43.png}
+
+}
+
+\caption{\label{fig-043}drwatson}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/44.png}
+
+}
+
+\caption{\label{fig-044}packets}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/45.png}
+
+}
+
+\caption{\label{fig-045}packet}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/46.png}
+
+}
+
+\caption{\label{fig-046}doneinstall}
+
+\end{figure}%
+
+Работа с Julia (рис.~\ref{fig-047}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/47.png}
+
+}
+
+\caption{\label{fig-047}julia1}
+
+\end{figure}%
+
+Установка пакетов для Julia (рис.~\ref{fig-048}) (рис.~\ref{fig-049})
+(рис.~\ref{fig-050}) (рис.~\ref{fig-051}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/48.png}
+
+}
+
+\caption{\label{fig-048}juliapackets}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/49.png}
+
+}
+
+\caption{\label{fig-049}juliapackwt}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/50.png}
+
+}
+
+\caption{\label{fig-050}juliapac}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/51.png}
+
+}
+
+\caption{\label{fig-051}error}
+
+\end{figure}%
+
+Знакомство с julia через терминал (рис.~\ref{fig-052}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/52.png}
+
+}
+
+\caption{\label{fig-052}acquaintancejulia}
+
+\end{figure}%
+
+Загрузка Julia вручную (рис.~\ref{fig-053}).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.7\linewidth,height=\textheight,keepaspectratio]{image/53.png}
+
+}
+
+\caption{\label{fig-053}installjulia}
+
+\end{figure}%
+
+\chapter{Выводы}\label{ux432ux44bux432ux43eux434ux44b}
+
+В ходе лабораторной работы я приобрела практические навыки работы с
+системой управления версиями Git, языком программирования Julia.
+
+\chapter*{Список
+литературы}\label{ux441ux43fux438ux441ux43eux43a-ux43bux438ux442ux435ux440ux430ux442ux443ux440ux44b}
+\addcontentsline{toc}{chapter}{Список литературы}
+
+\printbibliography[heading=none]
+
+
+
+
+
+\end{document}
