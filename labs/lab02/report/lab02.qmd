@@ -162,9 +162,9 @@ license: "CC BY"
 
 ![quarto](image/32.png){#fig-032 width=70%}
 
-{{< include ../project/markdown/lv_ode/lv_ode.qmd >}}
-
 {{< include ../project/markdown/sir_ode/sir_ode.qmd >}}
+
+{{< include ../project/markdown/lv_ode/lv_ode.qmd >}}
 
 # Выводы
 

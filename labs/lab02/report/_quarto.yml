@@ -8,7 +8,7 @@ self-contained: true
 ## Julia support
 engine: julia
 julia:
-   exeflags: ["--project=../project"]
+  exeflags: ["--project=../project"]
 
 ## Generic options
 lang: ru-RU
@@ -32,6 +32,7 @@ format:
     toc: true
     number-sections: true
     toc-depth: 2
+    fig-format: png
   ### Pdf output format
   pdf:
     # pdf-engine: xelatex
