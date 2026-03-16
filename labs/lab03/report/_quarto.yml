@@ -1,11 +1,9 @@
-project:
-  title: "report"
-  output-dir: "_output"
-
+title: "report"
+output-dir: "_output"
 standalone: true
 self-contained: true
 
- ##Julia support
+## Julia support
 engine: julia
 julia:
   exeflags: ["--project=../project"]
@@ -16,51 +14,49 @@ number-sections: true
 toc: true
 toc-title: "Содержание"
 toc-depth: 2
+
 ## Crossref customization
 crossref:
   lof-title: "Список иллюстраций"
   lot-title: "Список таблиц"
   lol-title: "Листинги"
-## Bibliography
-bibliography:
-  - bib/cite.bib
-csl: _resources/csl/gost-r-7-0-5-2008-numeric.csl
-## Formats
+
+## Форматы
 format:
-  ### Docx output format
+  ## DOCX
   docx:
     toc: true
     number-sections: true
     toc-depth: 2
-  ### Pdf output format
+    bibliography: bib/cite.bib
+    csl: _resources/csl/gost-r-7-0-5-2008-numeric.csl
+
+  ## PDF
   pdf:
-    # pdf-engine: xelatex
-    ### minted support
-    # filters:
-    #   - minted-quarto
-    toc: true
-    number-sections: true
-    colorlinks: false
-    toc-depth: 2
-    lof: true # List of figures
-    lot: true # List of tables
-    #### Document
     documentclass: scrreprt
     papersize: a4
     fontsize: 12pt
     linestretch: 1.5
-    #### Language
+    colorlinks: false
+    toc: true
+    number-sections: true
+    toc-depth: 2
+    lof: true
+    lot: true
     babel-lang: russian
     babel-otherlangs: english
-    #### Biblatex
     cite-method: biblatex
     biblio-style: gost-numeric
     biblatexoptions:
       - backend=biber
       - langhook=extras
       - autolang=other*
-    #### Misc options
     csquotes: true
-    indent: true
-    include-in-header:
-      - file: _resources/tex/preamble.tex
+    bibliography: bib/cite.bib
+    csl: _resources/csl/gost-r-7-0-5-2008-numeric.csl
+
+include-in-header:
+  - file: _resources/tex/preamble.tex
+
+indent: true
+
