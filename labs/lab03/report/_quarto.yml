@@ -5,10 +5,10 @@ project:
 standalone: true
 self-contained: true
 
-## Julia support
-# engine: julia
-# julia:
-#   exeflags: ["--project=../project"]
+ ##Julia support
+ engine: julia
+ julia:
+   exeflags: ["--project=../project"]
 
 ## Generic options
 lang: ru-RU
