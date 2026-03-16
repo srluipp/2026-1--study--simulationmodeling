@@ -4,7 +4,7 @@ using DrWatson
 using Agents
 using DataFrames
 using Plots
-include(srcdir("daisyworld.jl"))
+include("/home/srluipp/project/src/daisyworld.jl")
 using CairoMakie
 model = daisyworld()
 daisycolor(a::Daisy) = a.breed
