@@ -1,7 +1,7 @@
 using DrWatson
 @quickactivate "project"
 using Agents, Plots, Statistics, Random, BlackBoxOptim, JLD2, DataFrames, CSV
-include(srcdir("sir_model.jl"))
+include("/home/srluipp/project/src/sir_model.jl") 
 # задание 1
 println("\n задание 1")
 model1 = initialize_sir(;

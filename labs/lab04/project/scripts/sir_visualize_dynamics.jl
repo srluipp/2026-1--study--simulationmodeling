@@ -1,7 +1,7 @@
 using DrWatson
 @quickactivate "project"
 using Agents, DataFrames, Plots, CSV
-include(srcdir("sir_model.jl"))
+include("/home/srluipp/project/src/sir_model.jl") 
 # Загружаем результаты сканирования
 df = CSV.read(datadir("beta_scan_all.csv"), DataFrame)
 # Создаём составной график

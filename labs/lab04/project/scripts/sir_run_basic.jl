@@ -2,7 +2,7 @@ using DrWatson
 @quickactivate "project"
 using Agents, DataFrames, Plots
 using JLD2
-include(srcdir("sir_model.jl"))
+include("/home/srluipp/project/src/sir_model.jl")  
 # Параметры эксперимента
 params = Dict(
 :Ns => [1000, 1000, 1000],

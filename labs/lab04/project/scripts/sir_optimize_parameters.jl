@@ -1,7 +1,7 @@
 using DrWatson
 @quickactivate "project"
 using BlackBoxOptim, Random, Statistics
-include(srcdir("sir_model.jl"))
+include("/home/srluipp/project/src/sir_model.jl") 
 # Целевая функция: минимизируем пиковую заболеваемость и смертность
 function cost_multi(x)
 # x[1]: β_und, x[2]: death_rate, x[3]: detection_time
