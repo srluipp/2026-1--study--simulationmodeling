@@ -57,9 +57,15 @@ license: "CC BY"
 
 ![V Сольвеевский конгресс (1927) «Электроны и фотоны»](image/solvay.jpg){#fig-001 width=70%}
 
+
+{{< include ../markdown/sir_run_basic-literate.qmd >}}
+{{< include ../markdown/sir_scan_beta-literate.qmd >}}
+{{< include ../markdown/sir_migration_effect-literate.qmd >}}
+{{< include ../markdown/sir_optimize_parameters-literate.qmd >}}
+{{< include ../markdown/sir_visualize_dynamics-literate.qmd >}}
 # Выводы
 
-Здесь кратко описываются итоги проделанной работы.
+
 
 # Список литературы{.unnumbered}
 
