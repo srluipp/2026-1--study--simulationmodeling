@@ -4,7 +4,6 @@ using BlackBoxOptim, Random, Statistics
 include("/home/srluipp/project/src/sir_model.jl") 
 # Целевая функция: минимизируем пиковую заболеваемость и смертность
 function cost_multi(x)
-# x[1]: β_und, x[2]: death_rate, x[3]: detection_time
 model = initialize_sir(;
 Ns = [1000, 1000, 1000],
 β_und = fill(x[1], 3),
@@ -20,7 +19,6 @@ n_steps = 100,
 infected_frac(model) = count(a.status == :I for a in allagents(model)) / nagents(model)
 dead_count(model) = 3000 - nagents(model)
 peak_infected = 0.0
-# Запускаем с несколькими повторами
 replicates = 5
 peak_vals = Float64[]
 dead_vals = Int[]
@@ -49,7 +47,6 @@ push!(dead_vals, dead_count(model))
 end
 return (mean(peak_vals), mean(dead_vals) / 3000) # доля умерших
 end
-# Запуск оптимизации
 result = bboptimize(
 cost_multi,
 Method = :borg_moea,

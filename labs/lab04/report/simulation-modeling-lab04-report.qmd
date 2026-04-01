@@ -145,6 +145,7 @@ license: "CC BY"
 
 {{< include ../project/markdown/sir_run_basic/sir_run_basic.qmd >}}
 {{< include ../project/markdown/sir_scan_beta/sir_scan_beta.qmd >}}
+{{< include ../project/markdown/sir_optimize_parameters/sir_optimize_parameters.qmd >}}
 {{< include ../project/markdown/sir_visualize_dynamics/sir_visualize_dynamics.qmd >}}
 {{< include ../project/markdown/homework/homework.qmd >}}
 
@@ -154,8 +155,7 @@ license: "CC BY"
 
 # Список литературы{.unnumbered}
 
-- Имитационное моделирование. Практикум
-А. В. Королькова Кулябов Д. С.
+- [Лабораторная №4](https://esystem.rudn.ru/pluginfile.php/3094247/mod_resource/content/3/simulation-modeling-lab.pdf#chapter.4)
 
 ::: {#refs}
 :::

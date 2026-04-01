@@ -3,35 +3,45 @@ using DrWatson
 using Agents, Plots, Statistics, Random, BlackBoxOptim, JLD2, DataFrames, CSV
 include("/home/srluipp/project/src/sir_model.jl") 
 # задание 1
-println("\n задание 1")
+println("\nЗадание 1")
 model1 = initialize_sir(;
-    Ns = [1000,1000,1000],
-    β_und = [0.3,0.3,0.3],
-    β_det = [0.03,0.03,0.03],
+    Ns = [1000, 1000, 1000],
+    β_und = [0.3, 0.3, 0.3],
+    β_det = [0.03, 0.03, 0.03],
     infection_period = 14,
     detection_time = 7,
     death_rate = 0.02,
     reinfection_probability = 0.1,
-    Is = [0,0,1],
+    Is = [0, 0, 1],
     seed = 42
 )
 times = 1:100
+S_vals = Float64[]
 I_vals = Float64[]
-
+R_vals = Float64[]
 for _ in times
-    Agents.step!(model1,1)
+    Agents.step!(model1, 1)
+    push!(S_vals, susceptible_count(model1))
     push!(I_vals, infected_count(model1))
+    push!(R_vals, recovered_count(model1))
 end
-plot(times, I_vals, label="I")
+plot(times, S_vals, label="S")
+plot!(times, I_vals, label="I")
+plot!(times, R_vals, label="R")
+xlabel!("Время")
+ylabel!("Численность")
+title!("Динамика SIR-модели (базовый уровень)")
 savefig(plotsdir("task1.png"))
-γ = 1/14
-println("R0 = ", 0.3/γ)
+# Вычисление R₀
+γ = 1 / 14
+R₀ = 0.3 / γ
+println("R₀ = ", R₀)
+println("Наблюдаемая динамика: I сначала растёт, затем уменьшается, что соответствует R₀ > 1.")
 
 # задание 2
 println("\n задание 2")
 function find_epidemic_threshold(β_range=0.05:0.01:0.5; n_steps=100, N=1000, seed=42)
     results = []
-
     for β in β_range
         model = initialize_sir(;
             Ns = [N, N, N],
@@ -44,57 +54,44 @@ function find_epidemic_threshold(β_range=0.05:0.01:0.5; n_steps=100, N=1000, se
             Is = [1,0,0],
             seed = seed
         )
-
         max_I = 0.0
         for _ in 1:n_steps
             Agents.step!(model,1)
             current_I = infected_count(model)
             max_I = max(max_I, current_I)
         end
-
         epidemic = max_I > 0.05*N
-        R0 = β*14  # R0 = β*D, где D - продолжительность инфекции
-
+        R0 = β*14 
         push!(results, Dict(
-    :β => β,
-    :R0 => R0,
-    :epidemic => epidemic,
-    :max_I => max_I,
-    :max_I_N => max_I/N
-))
+            :β => β,
+            :R0 => R0,
+            :epidemic => epidemic,
+            :max_I => max_I,
+            :max_I_N => max_I/N
+        ))
     end
-
     df = DataFrame(results)
     CSV.write(datadir("task2_threshold.csv"), df)
-
-    # Визуализация
     p1 = plot(df.β, df.R0,
              xlabel="β", ylabel="R0",
              title="Зависимость R0 от β",
              label="R0 = β*D",
              lw=2, marker=:circle)
-
     p2 = plot(df.β, df.max_I./N,
              xlabel="β", ylabel="Макс. доля инфицированных",
              title="Пик инфекции в зависимости от β",
              label="Пик > 5%",
              lw=2, marker=:circle)
     hline!(p2, [0.05], label="Порог 5%", color=:red, ls=:dash)
-
     combined = plot(p1, p2, layout=(2,1), size=(800,600))
     savefig(combined, plotsdir("task2_threshold.png"))
-
-    # Поиск минимального β для эпидемии
     epidemic_cases = filter(:epidemic => ==(true), df)
     min_β = epidemic_cases.β[1]
     println("Минимальное β для эпидемии: ", min_β)
     println("Теоретический порог R0=1 соответствует β = ", 1/14)
-
     return df
 end
-
 task2_results = find_epidemic_threshold()
-
 # задание 3
 println("\n задание 3")
 # Инициализация модели с 3 городами
@@ -171,9 +168,7 @@ end
 # здание 5
 println("\n задание 5")
 function run_with_quarantine(use_quarantine, threshold)
-    # Создаем модель с карантинными свойствами
     if use_quarantine
-        # Добавляем карантинные свойства в словарь
         extra_props = Dict(
             :quarantine_threshold => threshold,
             :quarantine_active => falses(3)
@@ -181,14 +176,11 @@ function run_with_quarantine(use_quarantine, threshold)
     else
         extra_props = Dict()
     end
-    
-    # Создаем модель вручную, чтобы добавить свойства
     Ns = [1000, 1000, 1000]
     β_und = [0.5, 0.5, 0.5]
     β_det = [0.05, 0.05, 0.05]
     rng = Xoshiro(42)
     C = 3
-    
     migration_rates = zeros(C, C)
     for i in 1:C
         for j in 1:C
@@ -198,8 +190,6 @@ function run_with_quarantine(use_quarantine, threshold)
     for i in 1:C
         migration_rates[i, :] ./= sum(migration_rates[i, :])
     end
-    
-    # Объединяем свойства
     properties = Dict(
         :Ns => Ns,
         :β_und => β_und,
@@ -211,8 +201,6 @@ function run_with_quarantine(use_quarantine, threshold)
         :reinfection_probability => 0.1,
         :C => C
     )
-    
-    # Добавляем карантинные свойства если нужно
     if use_quarantine
         properties[:quarantine_threshold] = threshold
         properties[:quarantine_active] = falses(3)
@@ -220,29 +208,21 @@ function run_with_quarantine(use_quarantine, threshold)
     else
         properties[:use_quarantine] = false
     end
-    
     space = GraphSpace(complete_graph(C))
     model = StandardABM(Person, space; properties, rng, agent_step! = sir_agent_step!)
-    
-    # Заполняем агентами
     for city in 1:C
         for _ in 1:Ns[city]
             add_agent!(city, model, 0, :S)
         end
     end
-    
-    # Начальное заражение (10 человек в городе 1)
     city_agents = ids_in_position(1, model)
     infected_ids = sample(rng, city_agents, 10; replace=false)
     for id in infected_ids
         model[id].status = :I
         model[id].days_infected = 1
     end
-    
     infected_vals = Float64[]
-    
     for step in 1:100
-        # Обновление карантина (если включен)
         if use_quarantine
             for city in 1:3
                 agents_city = [a for a in allagents(model) if a.pos == city]
@@ -254,10 +234,7 @@ function run_with_quarantine(use_quarantine, threshold)
                 end
             end
         end
-        
-        # Шаг агентов
         for agent in allagents(model)
-            # Миграция с учетом карантина
             if !(use_quarantine && properties[:quarantine_active][agent.pos])
                 current_city = agent.pos
                 probs = properties[:migration_rates][current_city, :]
@@ -266,15 +243,12 @@ function run_with_quarantine(use_quarantine, threshold)
                     move_agent!(agent, target, model)
                 end
             end
-            
-            # Передача инфекции
             if agent.status == :I
                 rate = if agent.days_infected < properties[:detection_time]
                     properties[:β_und][agent.pos]
                 else
                     properties[:β_det][agent.pos]
                 end
-                
                 n_infections = rand(abmrng(model), Poisson(rate))
                 if n_infections > 0
                     neighbors = [a for a in agents_in_position(agent.pos, model) if a.id != agent.id]
@@ -295,8 +269,6 @@ function run_with_quarantine(use_quarantine, threshold)
                 end
                 agent.days_infected += 1
             end
-            
-            # Выздоровление или смерть
             if agent.status == :I && agent.days_infected >= properties[:infection_period]
                 if rand(abmrng(model)) <= properties[:death_rate]
                     remove_agent!(agent, model)
@@ -306,13 +278,10 @@ function run_with_quarantine(use_quarantine, threshold)
                 end
             end
         end
-        
         push!(infected_vals, infected_count(model))
     end
-    
     return infected_vals
 end
-
 println("Запуск без карантина...")
 infected_no = run_with_quarantine(false, 0.0)
 

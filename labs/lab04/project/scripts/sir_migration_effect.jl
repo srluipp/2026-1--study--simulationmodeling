@@ -2,7 +2,6 @@ using DrWatson
 @quickactivate "project"
 using Agents, DataFrames, Plots, CSV, Random
 include("/home/srluipp/project/src/sir_model.jl")
-
 # Функция для создания матрицы миграции с заданной интенсивностью
 function create_migration_matrix(C, intensity)
     M = ones(C, C) .* intensity ./ (C-1)
@@ -11,7 +10,6 @@ function create_migration_matrix(C, intensity)
     end
     return M
 end
-
 # Функция для измерения времени достижения пика
 function peak_time(p)
     migration_rates = create_migration_matrix(p[:C], p[:migration_intensity])
@@ -27,13 +25,10 @@ function peak_time(p)
         seed = p[:seed],
         migration_rates = migration_rates,
     )
-
     infected_frac(model) = count(a.status == :I for a in allagents(model)) / nagents(model)
     peak = 0.0
     peak_step = 0
-
     for step = 1:p[:n_steps]
-        # Ручной шаг
         agent_ids = collect(allids(model))
         for id in agent_ids
             agent = try
@@ -45,22 +40,17 @@ function peak_time(p)
                 sir_agent_step!(agent, model)
             end
         end
-
         frac = infected_frac(model)
         if frac > peak
             peak = frac
             peak_step = step
         end
-    end  # ← Добавлен недостающий `end` для цикла `for`
-
+    end  
     return (peak_time = peak_step, peak_value = peak)
 end
-
-# Сканирование интенсивности миграции
 migration_intensities = 0.0:0.1:0.5
 seeds = [42, 43, 44]
 params_list = []
-
 for mig in migration_intensities
     for s in seeds
         push!(
@@ -82,8 +72,6 @@ for mig in migration_intensities
         )
     end
 end
-
-# Запуск
 results = []
 for params in params_list
     data = peak_time(params)
@@ -92,19 +80,14 @@ for params in params_list
         "Завершён эксперимент с migration_intensity = $(params[:migration_intensity]), seed = $(params[:seed])",
     )
 end
-
-# Сохраняем все прогоны
 df = DataFrame(results)
 CSV.write(datadir("migration_scan_all.csv"), df)
-
-# Усреднение по повторам
 using Statistics
 grouped = combine(
     groupby(df, [:migration_intensity]),
     :peak_time => mean => :mean_peak_time,
     :peak_value => mean => :mean_peak_value,
 )
-
 # Визуализация
 plot(
     grouped.migration_intensity,
