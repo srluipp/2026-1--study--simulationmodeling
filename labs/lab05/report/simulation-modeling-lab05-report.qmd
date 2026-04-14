@@ -59,7 +59,7 @@ license: "CC BY"
 
 # Выполнение лабораторной работы
 
- Начинаю лабораторную с главного скрипта, где будет описана модель обедающих философов Dining_philosophers в src ([рис. @fig-001]).
+Начинаю лабораторную с главного скрипта, где будет описана модель обедающих философов Dining_philosophers в src ([рис. @fig-001]).
 
 ![Создание файла Dining_philosophers в src](image/1.png){#fig-001 width=70%}
 
@@ -72,7 +72,7 @@ license: "CC BY"
 
 ![Скрипт dining_philosophers](image/3.png){#fig-003 width=70%}
 
-В plots возвращаются следующие графики ([рис. @fig-004]) ([рис. @fig-008]).
+В plots возвращаются следующие графики ([рис. @fig-004]) ([рис. @fig-007]).
 
 ![arbiter_simulation](image/4.png){#fig-004 width=70%}
 
