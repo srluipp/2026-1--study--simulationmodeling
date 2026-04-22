@@ -1,0 +1,306 @@
+using DrWatson
+@quickactivate "project"
+using Agents, Plots, Statistics, Random, BlackBoxOptim, JLD2, DataFrames, CSV
+include("/home/srluipp/project/src/sir_model.jl") 
+# задание 1
+println("\n задание 1")
+model1 = initialize_sir(;
+    Ns = [1000,1000,1000],
+    β_und = [0.3,0.3,0.3],
+    β_det = [0.03,0.03,0.03],
+    infection_period = 14,
+    detection_time = 7,
+    death_rate = 0.02,
+    reinfection_probability = 0.1,
+    Is = [0,0,1],
+    seed = 42
+)
+times = 1:100
+I_vals = Float64[]
+
+for _ in times
+    Agents.step!(model1,1)
+    push!(I_vals, infected_count(model1))
+end
+plot(times, I_vals, label="I")
+savefig(plotsdir("task1.png"))
+γ = 1/14
+println("R0 = ", 0.3/γ)
+
+# задание 2
+println("\n задание 2")
+function find_threshold()
+    for beta in 0.05:0.01:0.3
+        model = initialize_sir(;
+            Ns=[1000],
+            β_und=[beta],
+            β_det=[beta/10],
+            infection_period=14,
+            detection_time=7,
+            Is=[1],
+            seed=42
+        )
+        peak = 0
+        for _ in 1:100
+            Agents.step!(model,1)
+            peak = max(peak, infected_count(model))
+        end
+        if peak/1000 > 0.05
+            return beta
+        end
+    end
+end
+println("β приблизительно равно ", find_threshold())
+# задание 3
+println("\n задание 3")
+# Инициализация модели с 3 городами
+model3 = initialize_sir(;
+    Ns = [1000, 1000, 1000],
+    β_und = [0.7, 0.5, 0.3],
+    β_det = [0.07, 0.05, 0.03],
+    Is = [10, 0, 0],
+    seed = 42
+)
+
+# Симуляция и сбор данных
+I_city = [Float64[] for _ in 1:3]
+for _ in 1:100
+    Agents.step!(model3, 1)
+    for c in 1:3
+        push!(I_city[c], count(a -> a.pos == c && a.status == :I, allagents(model3)))
+    end
+end
+
+# Визуализация
+p3 = plot(I_city,
+     label = ["city1" "city2" "city3"],
+     xlabel = "День",
+     ylabel = "Число инфицированных",
+     title = "Динамика инфекции в городах",
+     lw = 2)
+savefig(p3, plotsdir("task3.png"))
+
+
+p3 = plot(I_city[1], label="city1")
+plot!(p3, I_city[2], label="city2")
+plot!(p3, I_city[3], label="city3")
+savefig(p3, plotsdir("task3.png"))
+
+# задание 4
+println("\n задание 4")
+function create_migration_matrix(C,x)
+    M = ones(C,C).*x/(C-1)
+    for i in 1:C
+        M[i,i] = 1-x
+    end
+    return M
+end
+
+function peak_time(x)
+    model = initialize_sir(;
+        Ns=[1000,1000,1000],
+        β_und=[0.5,0.5,0.5],
+        β_det=[0.05,0.05,0.05],
+        migration_rates=create_migration_matrix(3,x),
+        Is=[10,0,0],
+        seed=42
+    )
+
+    peak_t = 0
+    max_i = 0
+
+    for t in 1:100
+        Agents.step!(model,1)
+        i = infected_count(model)
+        if i > max_i
+            max_i = i
+            peak_t = t
+        end
+    end
+    return peak_t
+end
+
+for x in 0.0:0.1:0.5
+    println(x, " → ", peak_time(x))
+end
+
+# здание 5
+println("\n задание 5")
+function run_with_quarantine(use_quarantine, threshold)
+    # Создаем модель с карантинными свойствами
+    if use_quarantine
+        # Добавляем карантинные свойства в словарь
+        extra_props = Dict(
+            :quarantine_threshold => threshold,
+            :quarantine_active => falses(3)
+        )
+    else
+        extra_props = Dict()
+    end
+    Ns = [1000, 1000, 1000]
+    β_und = [0.5, 0.5, 0.5]
+    β_det = [0.05, 0.05, 0.05]
+    rng = Xoshiro(42)
+    C = 3
+    migration_rates = zeros(C, C)
+    for i in 1:C
+        for j in 1:C
+            migration_rates[i, j] = (Ns[i] + Ns[j]) / Ns[i]
+        end
+    end
+    for i in 1:C
+        migration_rates[i, :] ./= sum(migration_rates[i, :])
+    end
+    properties = Dict(
+        :Ns => Ns,
+        :β_und => β_und,
+        :β_det => β_det,
+        :migration_rates => migration_rates,
+        :infection_period => 14,
+        :detection_time => 7,
+        :death_rate => 0.02,
+        :reinfection_probability => 0.1,
+        :C => C
+    )
+    if use_quarantine
+        properties[:quarantine_threshold] = threshold
+        properties[:quarantine_active] = falses(3)
+        properties[:use_quarantine] = true
+    else
+        properties[:use_quarantine] = false
+    end
+    space = GraphSpace(complete_graph(C))
+    model = StandardABM(Person, space; properties, rng, agent_step! = sir_agent_step!)
+    for city in 1:C
+        for _ in 1:Ns[city]
+            add_agent!(city, model, 0, :S)
+        end
+    end
+    city_agents = ids_in_position(1, model)
+    infected_ids = sample(rng, city_agents, 10; replace=false)
+    for id in infected_ids
+        model[id].status = :I
+        model[id].days_infected = 1
+    end
+    infected_vals = Float64[]
+    for step in 1:100
+        if use_quarantine
+            for city in 1:3
+                agents_city = [a for a in allagents(model) if a.pos == city]
+                total = length(agents_city)
+                infected = count(a -> a.status == :I, agents_city)
+                
+                if total > 0 && infected / total > properties[:quarantine_threshold]
+                    properties[:quarantine_active][city] = true
+                end
+            end
+        end
+        for agent in allagents(model)
+            if !(use_quarantine && properties[:quarantine_active][agent.pos])
+                current_city = agent.pos
+                probs = properties[:migration_rates][current_city, :]
+                target = sample(abmrng(model), 1:C, Weights(probs))
+                if target != current_city
+                    move_agent!(agent, target, model)
+                end
+            end
+            if agent.status == :I
+                rate = if agent.days_infected < properties[:detection_time]
+                    properties[:β_und][agent.pos]
+                else
+                    properties[:β_det][agent.pos]
+                end
+                n_infections = rand(abmrng(model), Poisson(rate))
+                if n_infections > 0
+                    neighbors = [a for a in agents_in_position(agent.pos, model) if a.id != agent.id]
+                    shuffle!(abmrng(model), neighbors)
+                    cnt = 0
+                    for contact in neighbors
+                        cnt >= n_infections && break
+                        if contact.status == :S
+                            contact.status = :I
+                            contact.days_infected = 1
+                            cnt += 1
+                        elseif contact.status == :R && rand(abmrng(model)) <= properties[:reinfection_probability]
+                            contact.status = :I
+                            contact.days_infected = 1
+                            cnt += 1
+                        end
+                    end
+                end
+                agent.days_infected += 1
+            end
+            if agent.status == :I && agent.days_infected >= properties[:infection_period]
+                if rand(abmrng(model)) <= properties[:death_rate]
+                    remove_agent!(agent, model)
+                else
+                    agent.status = :R
+                    agent.days_infected = 0
+                end
+            end
+        end
+        push!(infected_vals, infected_count(model))
+    end
+    return infected_vals
+end
+println("Запуск без карантина...")
+infected_no = run_with_quarantine(false, 0.0)
+
+println("Запуск с карантином (порог=10%)...")
+infected_yes = run_with_quarantine(true, 0.1)
+
+p5 = plot(infected_no, label="Без карантина", linewidth=2)
+plot!(p5, infected_yes, label="Карантин (10%)", linewidth=2)
+xlabel!(p5, "Дни")
+ylabel!(p5, "Инфицированные")
+title!(p5, "Задание 5: Эффективность карантина")
+savefig(p5, plotsdir("task5.png"))
+
+peak_no = maximum(infected_no)
+peak_yes = maximum(infected_yes)
+println("Без карантина: пик = $(round(peak_no)) человек")
+println("С карантином: пик = $(round(peak_yes)) человек")
+
+# задание 6
+println("\n задание 6")
+function cost(x)
+    peak_vals = Float64[]
+    dead_vals = Float64[]
+    for rep in 1:3
+        model = initialize_sir(;
+            Ns=[1000,1000,1000],
+            β_und=fill(x[1],3),
+            β_det=fill(x[1]/10,3),
+            detection_time=round(Int,x[2]),
+            death_rate=x[3],
+            Is=[10,0,0],
+            seed=42+rep
+        )
+        peak = 0.0
+        for _ in 1:100
+            Agents.step!(model,1)
+            peak = max(peak, infected_count(model)/nagents(model))
+        end
+        push!(peak_vals, peak)
+        push!(dead_vals, (3000 - nagents(model))/3000)
+    end
+    mean_peak = mean(peak_vals)
+    mean_dead = mean(dead_vals)
+
+    penalty = mean_peak > 0.3 ? 10.0 : 0.0
+
+    return mean_dead + penalty
+end
+result = bboptimize(
+    cost,
+    SearchRange=[(0.1,0.8),(3.0,14.0),(0.001,0.05)],
+    NumDimensions=3,
+    MaxTime=60
+)
+best = best_candidate(result)
+println("Оптимум: ", best)
+@save datadir("opt.jld2") best
+
+
+
+
