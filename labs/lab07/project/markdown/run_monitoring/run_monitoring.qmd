@@ -1,0 +1,47 @@
+```{julia}
+using DrWatson
+@quickactivate
+
+using Statistics
+using Plots
+
+include(srcdir("simulation2.jl"))
+
+result = sim_repair(
+    N=10,
+    S=3,
+    repairers=2,
+    seed=42
+)
+
+println("Crash time: ", result.crash_time)
+println("Average queue length: ", result.avg_queue)
+println("Repair utilization: ", result.utilization)
+
+
+gr()
+
+p = plot(
+    result.times,
+    result.machines,
+    xlabel = "Time",
+    ylabel = "Working machines",
+    label = "Machines",
+    lw = 2,
+    title = "Working machines over time"
+)
+
+savefig(p, plotsdir("machines_over_time.png"))
+
+println("Plot saved.")
+
+λ = 1/100
+μ = 1.0
+N = 10
+R = 2
+
+ρ = (N * λ) / (R * μ)
+
+println("Analytical utilization estimate: ", ρ)
+```
+

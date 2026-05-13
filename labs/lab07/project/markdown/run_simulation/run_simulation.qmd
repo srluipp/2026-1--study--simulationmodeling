@@ -1,0 +1,75 @@
+```{julia}
+using DrWatson
+@quickactivate "MMc"
+using CairoMakie
+using CSV
+using DataFrames
+include(srcdir("simulation.jl"))
+using .SimulationModel
+```
+
+параметры модели
+
+```{julia}
+num_customers = 1000
+num_servers = 2
+
+λ = 0.9
+μ = 0.5
+
+df = run_simulation(
+    num_customers,
+    num_servers,
+    λ,
+    μ
+)
+```
+
+сохранение результатов
+
+```{julia}
+CSV.write(datadir("sims/results.csv"), df)
+
+println(first(df, 5))
+
+fig1 = Figure()
+
+ax1 = Axis(
+    fig1[1,1],
+    title = "Waiting Time",
+    xlabel = "Customer ID",
+    ylabel = "Wait Time"
+)
+
+lines!(ax1, df.id, df.wait_time)
+
+save(plotsdir("waiting_time.png"), fig1)
+
+fig2 = Figure()
+
+ax2 = Axis(
+    fig2[1,1],
+    title = "System Time",
+    xlabel = "Customer ID",
+    ylabel = "Time in System"
+)
+
+lines!(ax2, df.id, df.system_time)
+
+save(plotsdir("system_time.png"), fig2)
+
+
+fig3 = Figure()
+
+ax3 = Axis(
+    fig3[1,1],
+    title = "Histogram of Waiting Time",
+    xlabel = "Wait Time",
+    ylabel = "Frequency"
+)
+
+hist!(ax3, df.wait_time)
+
+save(plotsdir("wait_histogram.png"), fig3)
+```
+
