@@ -4,7 +4,7 @@ author:
   name: Люпп Софья Романовна
   degrees: Bachelor's
   orcid: 0000-0002-0877-7063
-  email: kulyabov-ds@rudn.ru
+  email: 1132236039@rudn.ru
   affiliation:
     - name: Российский университет дружбы народов
       country: Российская Федерация
@@ -12,8 +12,8 @@ author:
       city: Москва
       address: ул. Миклухо-Маклая, д. 6
 ## Title
-title: Презентация по лабораторной работе №5
-subtitle: Аппарат сетей Петри
+title: Презентация по лабораторной работе №7
+subtitle: Дискретно-событийное моделирование
 license: CC BY
 date: today
 date-format: "YYYY-MM-DD" # Example: 2025-09-06
